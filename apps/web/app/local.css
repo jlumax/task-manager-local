@@ -35,7 +35,7 @@
 }
 
 .local-skin .view-toggle {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 7px;
   width: calc(100% - 50px);
   margin: 0 auto 20px;
@@ -77,9 +77,11 @@
   box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 24%, transparent);
 }
 
-.local-data-button {
+.local-data-button,
+.local-support-button {
   display: inline-flex !important;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 
@@ -229,6 +231,39 @@
 .local-data-grid button span { grid-column: 2; color: var(--muted); font-size: .68rem; }
 .local-data-panel > footer { display: flex; gap: 7px; align-items: center; padding-top: 13px; border-top: 1px solid var(--border); color: var(--muted); font-size: .72rem; }
 .local-data-message { margin: 12px 0 0; padding: 9px 11px; color: var(--foreground); background: var(--accent); border-radius: 8px; font-size: .75rem; }
+
+.local-support-panel {
+  position: relative;
+  width: min(440px, 100%);
+  padding: 28px;
+  color: var(--foreground);
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 6px);
+  box-shadow: 0 34px 90px rgba(0, 0, 0, .28);
+}
+
+.local-support-panel h2 {
+  margin: 8px 34px 20px;
+  font-size: 1.22rem;
+  font-weight: 700;
+}
+
+.local-support-panel img {
+  display: block;
+  width: min(100%, 340px);
+  height: auto;
+  margin: 0 auto;
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  border-radius: var(--radius);
+}
+
+.local-support-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
 
 /* Custom image theme: keep the image atmospheric while UI surfaces stay reliably readable. */
 [data-theme="custom"] .local-skin header h1 {

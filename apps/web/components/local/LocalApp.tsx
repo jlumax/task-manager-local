@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Database } from 'lucide-react';
+import Image from 'next/image';
+import { Coffee, Database, X } from 'lucide-react';
 import { useTaskStore } from '@/store/taskStore';
 import { LOCAL_WORKSPACE_ID } from '@/lib/app-mode';
 import Header from '@/components/layout/Header';
@@ -42,6 +43,7 @@ export default function LocalApp() {
   } = useTaskStore();
   const [ready, setReady] = useState(false);
   const [showData, setShowData] = useState(false);
+  const [showSupport, setShowSupport] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -109,6 +111,15 @@ export default function LocalApp() {
               <Database size={15} aria-hidden="true" />
               本地数据
             </button>
+            <button
+              type="button"
+              data-theme="btn"
+              className="view-btn local-support-button"
+              onClick={() => setShowSupport(true)}
+            >
+              <Coffee size={15} aria-hidden="true" />
+              赞赏
+            </button>
           </div>
 
           {currentView === 'list' && <TaskList />}
@@ -124,6 +135,35 @@ export default function LocalApp() {
 
       <FireworksButton />
       <LocalDataPanel open={showData} onClose={() => setShowData(false)} />
+      {showSupport && (
+        <div className="local-modal-backdrop" onClick={() => setShowSupport(false)}>
+          <section
+            className="local-support-panel"
+            onClick={(event) => event.stopPropagation()}
+            aria-modal="true"
+            role="dialog"
+            aria-labelledby="local-support-title"
+          >
+            <button
+              type="button"
+              className="local-icon-button local-support-close"
+              onClick={() => setShowSupport(false)}
+              aria-label="关闭"
+            >
+              <X size={18} />
+            </button>
+            <span className="local-kicker">SUPPORT THE AUTHOR</span>
+            <h2 id="local-support-title">好心人，请作者喝杯咖啡吧</h2>
+            <Image
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/support-qr.png`}
+              alt="赞赏二维码"
+              width={568}
+              height={543}
+              priority
+            />
+          </section>
+        </div>
+      )}
       <MobileFloatBar />
     </div>
   );

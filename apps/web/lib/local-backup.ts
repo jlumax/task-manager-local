@@ -17,6 +17,54 @@ export interface LocalBackup {
   };
 }
 
+const IMAGE_EXTENSIONS: Record<string, string> = {
+  'image/avif': 'avif',
+  'image/bmp': 'bmp',
+  'image/gif': 'gif',
+  'image/heic': 'heic',
+  'image/heif': 'heif',
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/svg+xml': 'svg',
+  'image/webp': 'webp',
+};
+
+const EXTENSION_MIME_TYPES: Record<string, string> = Object.fromEntries(
+  Object.entries(IMAGE_EXTENSIONS).map(([mimeType, extension]) => [extension, mimeType]),
+);
+
+function decodeImageDataUrl(value: string): { bytes: Uint8Array; extension: string } | null {
+  const match = /^data:(image\/[^;,]+)((?:;[^,]*)*),([\s\S]*)$/.exec(value);
+  if (!match) return null;
+
+  const [, mimeType, parameters, payload] = match;
+  const extension = IMAGE_EXTENSIONS[mimeType.toLowerCase()] || 'bin';
+  if (parameters.toLowerCase().includes(';base64')) {
+    const binary = atob(payload);
+    const bytes = new Uint8Array(binary.length);
+    for (let index = 0; index < binary.length; index += 1) {
+      bytes[index] = binary.charCodeAt(index);
+    }
+    return { bytes, extension };
+  }
+
+  return { bytes: new TextEncoder().encode(decodeURIComponent(payload)), extension };
+}
+
+function imageMimeType(path: string) {
+  const extension = path.split('.').pop()?.toLowerCase() || '';
+  return EXTENSION_MIME_TYPES[extension] || 'application/octet-stream';
+}
+
+function bytesToDataUrl(bytes: Uint8Array, mimeType: string) {
+  let binary = '';
+  const chunkSize = 0x8000;
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + chunkSize));
+  }
+  return `data:${mimeType};base64,${btoa(binary)}`;
+}
+
 export async function createLocalBackup(): Promise<LocalBackup> {
   const [tasks, projects, settings] = await Promise.all([
     getAllTasks(),
@@ -54,8 +102,9 @@ function assertBackup(value: unknown): asserts value is LocalBackup {
 
 export async function readLocalBackup(file: File): Promise<LocalBackup> {
   let raw: string;
+  let zip: JSZip | null = null;
   if (file.name.toLowerCase().endsWith('.zip')) {
-    const zip = await JSZip.loadAsync(file);
+    zip = await JSZip.loadAsync(file);
     const entry = zip.file('task-manager-backup.json');
     if (!entry) throw new Error('ZIP 中缺少 task-manager-backup.json');
     raw = await entry.async('string');
@@ -65,6 +114,29 @@ export async function readLocalBackup(file: File): Promise<LocalBackup> {
 
   const parsed = JSON.parse(raw) as unknown;
   assertBackup(parsed);
+
+  if (zip) {
+    const restoreImage = async (value: string) => {
+      if (!value.startsWith('images/')) return value;
+      const entry = zip?.file(value);
+      if (!entry) throw new Error(`ZIP 中缺少图片文件: ${value}`);
+      const bytes = await entry.async('uint8array');
+      return bytesToDataUrl(bytes, imageMimeType(value));
+    };
+
+    parsed.data.tasks = await Promise.all(parsed.data.tasks.map(async (task) => ({
+      ...task,
+      progress: await Promise.all(task.progress.map(async (item) => ({
+        ...item,
+        images: item.images ? await Promise.all(item.images.map(restoreImage)) : undefined,
+      }))),
+    })));
+    parsed.data.settings = await Promise.all(parsed.data.settings.map(async (setting) => ({
+      ...setting,
+      value: await restoreImage(setting.value),
+    })));
+  }
+
   return parsed;
 }
 
@@ -100,15 +172,6 @@ function backupFileStem(exportedAt: string) {
   return `task-manager-${exportedAt.slice(0, 10)}`;
 }
 
-export async function downloadJsonBackup() {
-  const backup = await createLocalBackup();
-  downloadBlob(
-    new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }),
-    `${backupFileStem(backup.exportedAt)}.json`,
-  );
-  localStorage.setItem('task-manager-last-backup-at', backup.exportedAt);
-}
-
 export function downloadMarkdownExport(markdown: string) {
   const exportedAt = new Date().toISOString();
   downloadBlob(
@@ -120,10 +183,44 @@ export function downloadMarkdownExport(markdown: string) {
 export async function downloadZipBackup() {
   const backup = await createLocalBackup();
   const zip = new JSZip();
-  zip.file('task-manager-backup.json', JSON.stringify(backup, null, 2));
+  const archivedImages = new Map<string, string>();
+  let imageIndex = 0;
+
+  const archiveImage = (value: string) => {
+    const decoded = decodeImageDataUrl(value);
+    if (!decoded) return value;
+    const existingPath = archivedImages.get(value);
+    if (existingPath) return existingPath;
+
+    imageIndex += 1;
+    const path = `images/image-${String(imageIndex).padStart(4, '0')}.${decoded.extension}`;
+    zip.file(path, decoded.bytes);
+    archivedImages.set(value, path);
+    return path;
+  };
+
+  const archiveBackup: LocalBackup = {
+    ...backup,
+    data: {
+      ...backup.data,
+      tasks: backup.data.tasks.map((task) => ({
+        ...task,
+        progress: task.progress.map((item) => ({
+          ...item,
+          images: item.images?.map(archiveImage),
+        })),
+      })),
+      settings: backup.data.settings.map((setting) => ({
+        ...setting,
+        value: archiveImage(setting.value),
+      })),
+    },
+  };
+
+  zip.file('task-manager-backup.json', JSON.stringify(archiveBackup, null, 2));
   zip.file(
     'README.txt',
-    '任务进度管理器 Local 版完整备份。\n请在应用的“本地数据”面板中导入此 ZIP。\n图片以 data URL 形式嵌入 JSON，无需额外文件。\n',
+    '任务进度管理器 Local 版完整备份。\n请在应用的“本地数据”面板中导入此 ZIP。\n数据保存在 task-manager-backup.json，原始图片保存在 images/ 目录。\n',
   );
   const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
   downloadBlob(blob, `${backupFileStem(backup.exportedAt)}.zip`);

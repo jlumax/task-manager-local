@@ -215,7 +215,7 @@ export const useTaskStore = create<TaskStore>()(
       ganttMode: 'week',
       ganttOffset: 0,
       ganttFilter: 'all',
-      theme: 'starry',
+      theme: 'rage',
       customThemeImage: '',
       customThemePalette: null,
       fontFamily: 'noto-sans',

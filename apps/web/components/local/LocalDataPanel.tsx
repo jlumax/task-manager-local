@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Archive, Database, Download, FileText, HardDrive, ShieldCheck, Upload, X } from 'lucide-react';
+import { Archive, Database, FileText, HardDrive, ShieldCheck, Upload, X } from 'lucide-react';
 import { useTaskStore } from '@/store/taskStore';
 import {
-  downloadJsonBackup,
   downloadMarkdownExport,
   downloadZipBackup,
   getLocalStorageStatus,
@@ -68,8 +67,8 @@ export default function LocalDataPanel({ open, onClose }: { open: boolean; onClo
         </div>
 
         <div className="local-data-grid">
-          <button onClick={() => downloadJsonBackup().then(() => setMessage('JSON 备份已下载'))}>
-            <Download size={19} /><strong>导出 JSON</strong><span>可读的完整数据快照</span>
+          <button onClick={() => downloadZipBackup().then(() => setMessage('ZIP 备份已下载'))}>
+            <Archive size={19} /><strong>导出 ZIP</strong><span>JSON 数据与原始图片打包</span>
           </button>
           <button onClick={() => {
             downloadMarkdownExport(exportToMarkdown());
@@ -77,13 +76,10 @@ export default function LocalDataPanel({ open, onClose }: { open: boolean; onClo
           }}>
             <FileText size={19} /><strong>导出 Markdown</strong><span>便于阅读和文本迁移</span>
           </button>
-          <button onClick={() => downloadZipBackup().then(() => setMessage('ZIP 备份已下载'))}>
-            <Archive size={19} /><strong>导出 ZIP</strong><span>便于归档和跨设备迁移</span>
-          </button>
           <button onClick={() => fileRef.current?.click()}>
             <Upload size={19} /><strong>恢复备份</strong><span>支持 JSON 或 ZIP</span>
           </button>
-          <button style={{ gridColumn: '1 / -1' }} onClick={async () => {
+          <button onClick={async () => {
             const persistent = await requestPersistentStorage();
             setStatus((current) => ({ ...current, persistent }));
             setMessage(persistent ? '已获得持久存储保护' : '浏览器未授予持久存储，请定期备份');
