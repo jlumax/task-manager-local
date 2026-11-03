@@ -38,7 +38,7 @@ export default function MobileFloatBar() {
         <button onClick={() => setCurrentView(currentView === 'list' ? 'gantt' : 'list')}>
           {currentView === 'list' ? (
             <>
-              <BarChart3 size={18} className="inline mr-1" />
+              <BarChart3 size={18} className="inline mr-1" style={{ transform: 'rotate(90deg)' }} />
               甘特图
             </>
           ) : (

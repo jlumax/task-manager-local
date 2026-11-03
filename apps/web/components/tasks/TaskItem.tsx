@@ -533,7 +533,7 @@ export default function TaskItem({ task, defaultExpanded = false, searchTerm = '
           title="跳转到甘特图"
           style={{ right: 2 }}
         >
-          <BarChart3 size={14} />
+          <BarChart3 size={14} style={{ transform: 'rotate(90deg)' }} />
         </button>
       </li>
 

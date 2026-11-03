@@ -169,7 +169,7 @@ function NoteCard({ task, searchTerm, onClick, onNavigateTask, onOpenImages, col
         title="跳转到甘特图"
         style={{ right: 2 }}
       >
-        <BarChart3 size={14} />
+        <BarChart3 size={14} style={{ transform: 'rotate(90deg)' }} />
       </button>
 
       {sortedProgress.length > 0 && !forceCollapsed && (

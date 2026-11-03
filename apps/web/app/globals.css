@@ -413,6 +413,16 @@ body[data-effects-disabled="true"] .success-border {
   50% { opacity: 0.6; transform: scale(1.02); }
 }
 
+.project-name-input::placeholder {
+  color: var(--muted);
+  opacity: 0.82;
+}
+
+.project-name-input:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--accent);
+}
+
 /* Stars */
 .star {
   position: fixed;

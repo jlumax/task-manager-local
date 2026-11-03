@@ -8,7 +8,7 @@ import { ViewType } from '@/types';
 const allViews: { key: ViewType; label: ReactNode; feature?: string }[] = [
   { key: 'list', label: <span className="icon-label"><ListTodo size={15} />列表</span> },
   { key: 'notes', label: <span className="icon-label"><NotebookText size={15} />笔记</span> },
-  { key: 'gantt', label: <span className="icon-label"><BarChart3 size={15} />甘特图</span>, feature: 'gantt' },
+  { key: 'gantt', label: <span className="icon-label"><BarChart3 size={15} style={{ transform: 'rotate(90deg)' }} />甘特图</span>, feature: 'gantt' },
 ];
 
 export default function ViewToggle() {

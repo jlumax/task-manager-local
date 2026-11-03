@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Coffee, Database, X } from 'lucide-react';
 import { useTaskStore } from '@/store/taskStore';
 import { LOCAL_WORKSPACE_ID } from '@/lib/app-mode';
+import { seedLocalDemoDataIfNeeded } from '@/lib/local-demo-data';
 import Header from '@/components/layout/Header';
 import ViewToggle from '@/components/layout/ViewToggle';
 import ProjectSelector from '@/components/layout/ProjectSelector';
@@ -51,6 +52,9 @@ export default function LocalApp() {
       useTaskStore.setState({ currentWorkspaceId: LOCAL_WORKSPACE_ID });
       await loadTasks();
       await migrateFromLocalStorage();
+      if (await seedLocalDemoDataIfNeeded()) {
+        await loadTasks();
+      }
       await Promise.all([loadProjects(), loadCelebrationTexts()]);
       if (active) setReady(true);
     })();
@@ -128,7 +132,7 @@ export default function LocalApp() {
 
           <footer className="text-center py-5 text-xs text-muted mt-4 border-t border-border">
             <p>数据仅保存在当前浏览器 · 建议定期导出 ZIP 备份</p>
-            <p className="mt-1">&copy; 2026 KUN WANG. Local Edition.</p>
+            <p className="mt-1">&copy; 2026 KUN WANG. Local Edition. jlumax@163.com</p>
           </footer>
         </div>
       </div>

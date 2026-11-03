@@ -274,7 +274,7 @@ export default function GanttChart() {
   return (
     <section className="gantt-container">
       <div className="gantt-header" style={{ flexWrap: 'nowrap' as const }}>
-        <h2 className="icon-heading"><BarChart3 size={20} />任务甘特图</h2>
+        <h2 className="icon-heading"><BarChart3 size={20} style={{ transform: 'rotate(90deg)' }} />任务甘特图</h2>
         <div className="gantt-filter-tabs">
           {(['all', 'active', 'completed', 'overdue'] as GanttFilter[]).map((f) => {
             const labelMap: Record<GanttFilter, string> = {

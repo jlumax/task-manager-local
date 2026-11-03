@@ -109,7 +109,7 @@ export default function ProjectSelector() {
     await deleteProject(id);
   };
 
-  const dropdownBg = 'var(--card-bg, #ffffff)';
+  const dropdownBg = 'var(--card, #ffffff)';
 
   return (
     <>
@@ -297,6 +297,7 @@ export default function ProjectSelector() {
           <div
             style={{
               background: dropdownBg,
+              border: '1px solid var(--border)',
               borderRadius: '12px',
               padding: '20px',
               width: '320px',
@@ -315,12 +316,13 @@ export default function ProjectSelector() {
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
               autoFocus
+              className="project-name-input"
               style={{
                 width: '100%',
                 padding: '8px 10px',
                 borderRadius: '8px',
                 border: '1px solid var(--border)',
-                background: 'var(--input-bg)',
+                background: 'var(--accent)',
                 color: 'var(--foreground)',
                 fontSize: '0.9rem',
                 marginBottom: '12px',
@@ -375,7 +377,7 @@ export default function ProjectSelector() {
                   borderRadius: '8px',
                   border: 'none',
                   background: 'var(--primary)',
-                  color: '#fff',
+                  color: 'var(--primary-foreground, #fff)',
                   fontSize: '0.85rem',
                   cursor: projectName.trim() ? 'pointer' : 'not-allowed',
                   opacity: projectName.trim() ? 1 : 0.5,

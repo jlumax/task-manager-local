@@ -5750,7 +5750,7 @@
   background-size: 180% 180%;
   filter: blur(34px) saturate(1.15) !important;
   transform-origin: center;
-  will-change: transform, opacity, background-position !important;
+  will-change: auto !important;
 }
 
 [data-theme="starry"] .aurora-layer:nth-child(1) {
@@ -5763,7 +5763,7 @@
   background:
     repeating-linear-gradient(96deg, transparent 0 7%, rgba(232, 72, 160, .1) 10%, rgba(169, 109, 241, .14) 15%, rgba(91, 196, 238, .22) 20%, rgba(47, 221, 166, .34) 24%, transparent 31%),
     linear-gradient(118deg, transparent 8%, rgba(230, 62, 151, .24) 29%, rgba(129, 92, 218, .11) 47%, rgba(58, 214, 201, .44) 67%, rgba(79, 226, 139, .38) 79%, transparent 91%);
-  animation: starry-aurora-curtain 14s ease-in-out -4s infinite alternate !important;
+  animation: none !important;
 }
 
 [data-theme="starry"] .aurora-layer:nth-child(2) {
@@ -5777,7 +5777,7 @@
     radial-gradient(ellipse 42% 70% at 28% 52%, rgba(34, 216, 158, .58), transparent 70%),
     radial-gradient(ellipse 38% 58% at 58% 42%, rgba(66, 190, 232, .3), transparent 72%),
     radial-gradient(ellipse 40% 64% at 82% 58%, rgba(65, 218, 154, .42), transparent 72%);
-  animation: starry-aurora-ribbon 18s ease-in-out -9s infinite alternate !important;
+  animation: none !important;
 }
 
 [data-theme="starry"] .aurora-layer:nth-child(3) {
@@ -5791,7 +5791,7 @@
     radial-gradient(ellipse 52% 34% at 18% 64%, rgba(45, 221, 157, .52), transparent 74%),
     radial-gradient(ellipse 48% 38% at 54% 48%, rgba(83, 173, 244, .26), transparent 72%),
     radial-gradient(ellipse 46% 32% at 86% 70%, rgba(231, 73, 155, .18), transparent 74%);
-  animation: starry-aurora-tide 16s ease-in-out -6s infinite alternate !important;
+  animation: none !important;
 }
 
 [data-theme="starry"] .aurora-shimmer {
@@ -5800,7 +5800,7 @@
     radial-gradient(ellipse 48% 26% at 20% 18%, rgba(229, 75, 163, .08), transparent 72%),
     radial-gradient(ellipse 52% 30% at 76% 46%, rgba(80, 205, 236, .1), transparent 74%),
     radial-gradient(ellipse 58% 28% at 42% 86%, rgba(72, 222, 151, .18), transparent 76%);
-  animation: starry-aurora-breathe 18s ease-in-out infinite alternate !important;
+  animation: none !important;
 }
 
 @keyframes starry-aurora-curtain {
