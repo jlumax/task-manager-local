@@ -223,7 +223,7 @@ export default function ThemeEffects() {
     if (document.querySelector('.aurora')) return;
     const aurora = document.createElement('div');
     aurora.className = 'aurora';
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
       const layer = document.createElement('div');
       layer.className = 'aurora-layer';
       aurora.appendChild(layer);

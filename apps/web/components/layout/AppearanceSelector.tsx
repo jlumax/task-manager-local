@@ -8,7 +8,7 @@ import { processCustomThemeImage } from '@/lib/custom-theme';
 
 const themes: { key: ThemeType; label: string; gradient: string }[] = [
   { key: 'default', label: '简洁白', gradient: 'linear-gradient(135deg, #ffffff 0%, #e7efeb 100%)' },
-  { key: 'starry', label: '星空黑', gradient: 'linear-gradient(135deg, #020806 0%, #0b2418 58%, #58c982 100%)' },
+  { key: 'starry', label: '极光星空', gradient: 'linear-gradient(135deg, #050816 0%, #0b6680 34%, #28b984 64%, #d74d91 100%)' },
   { key: 'morandi', label: '莫兰迪咖', gradient: 'linear-gradient(135deg, #d8cec5 0%, #a99584 100%)' },
   { key: 'morandi-blue', label: '莫兰迪蓝', gradient: 'linear-gradient(135deg, #b7c4cc 0%, #718999 100%)' },
   { key: 'morandi-multi', label: '莫兰迪多色', gradient: 'linear-gradient(135deg, #cbbdaf 0%, #b2c2ad 50%, #aabdc4 100%)' },

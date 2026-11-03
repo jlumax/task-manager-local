@@ -5736,56 +5736,130 @@
   animation: none !important;
 }
 
-/* Refined starry palette: deep-black surfaces with a balanced natural green aurora. */
+/* Aurora night-sky palette: three softly shifting curtains across the full viewport. */
 [data-theme="starry"] {
-  background: linear-gradient(145deg, #010302 0%, #020504 55%, #050a07 100%);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(90, 62, 146, .07), transparent 34%),
+    radial-gradient(circle at 82% 76%, rgba(20, 137, 104, .18), transparent 38%),
+    linear-gradient(155deg, #02030d 0%, #050817 48%, #071422 100%);
   --sync-ok: var(--primary);
 }
 
 [data-theme="starry"] .aurora-layer {
-  width: 145% !important;
-  height: 50% !important;
-  top: -13% !important;
-  left: -22% !important;
-  border-radius: 42% 58% 46% 54%;
-  filter: blur(20px) saturate(.9) !important;
-  opacity: .56 !important;
-  transform-origin: 50% 0;
-  will-change: transform !important;
-  animation: starry-aurora-drift 30s ease-in-out infinite alternate !important;
+  mix-blend-mode: screen;
+  background-size: 180% 180%;
+  filter: blur(34px) saturate(1.15) !important;
+  transform-origin: center;
+  will-change: transform, opacity, background-position !important;
 }
 
 [data-theme="starry"] .aurora-layer:nth-child(1) {
+  width: 112% !important;
+  height: 108% !important;
+  top: -31% !important;
+  left: -12% !important;
+  border-radius: 28% 72% 42% 58% / 72% 36% 64% 28%;
+  opacity: .44 !important;
   background:
-    linear-gradient(112deg, transparent 5%, rgba(203, 242, 211, .08) 17%, rgba(147, 226, 171, .56) 27%, rgba(78, 190, 122, .5) 39%, rgba(31, 130, 81, .3) 53%, rgba(11, 69, 44, .08) 64%, transparent 76%);
-  animation-delay: -6s !important;
+    repeating-linear-gradient(96deg, transparent 0 7%, rgba(232, 72, 160, .1) 10%, rgba(169, 109, 241, .14) 15%, rgba(91, 196, 238, .22) 20%, rgba(47, 221, 166, .34) 24%, transparent 31%),
+    linear-gradient(118deg, transparent 8%, rgba(230, 62, 151, .24) 29%, rgba(129, 92, 218, .11) 47%, rgba(58, 214, 201, .44) 67%, rgba(79, 226, 139, .38) 79%, transparent 91%);
+  animation: starry-aurora-curtain 14s ease-in-out -4s infinite alternate !important;
 }
 
 [data-theme="starry"] .aurora-layer:nth-child(2) {
+  width: 138% !important;
+  height: 68% !important;
+  top: 16% !important;
+  left: -24% !important;
+  border-radius: 64% 36% 72% 28% / 40% 66% 34% 60%;
+  opacity: .38 !important;
   background:
-    linear-gradient(72deg, transparent 8%, rgba(14, 73, 47, .06) 22%, rgba(38, 145, 91, .26) 36%, rgba(92, 202, 132, .44) 50%, rgba(185, 233, 200, .42) 61%, rgba(52, 152, 95, .16) 72%, transparent 86%);
-  transform: translateX(6%) rotate(4deg) scaleY(.88);
-  animation-delay: -15s !important;
-  animation-duration: 36s !important;
+    radial-gradient(ellipse 42% 70% at 28% 52%, rgba(34, 216, 158, .58), transparent 70%),
+    radial-gradient(ellipse 38% 58% at 58% 42%, rgba(66, 190, 232, .3), transparent 72%),
+    radial-gradient(ellipse 40% 64% at 82% 58%, rgba(65, 218, 154, .42), transparent 72%);
+  animation: starry-aurora-ribbon 18s ease-in-out -9s infinite alternate !important;
+}
+
+[data-theme="starry"] .aurora-layer:nth-child(3) {
+  width: 126% !important;
+  height: 62% !important;
+  top: 50% !important;
+  left: -14% !important;
+  border-radius: 36% 64% 31% 69% / 58% 42% 68% 32%;
+  opacity: .34 !important;
+  background:
+    radial-gradient(ellipse 52% 34% at 18% 64%, rgba(45, 221, 157, .52), transparent 74%),
+    radial-gradient(ellipse 48% 38% at 54% 48%, rgba(83, 173, 244, .26), transparent 72%),
+    radial-gradient(ellipse 46% 32% at 86% 70%, rgba(231, 73, 155, .18), transparent 74%);
+  animation: starry-aurora-tide 16s ease-in-out -6s infinite alternate !important;
 }
 
 [data-theme="starry"] .aurora-shimmer {
-  opacity: .2 !important;
+  opacity: .28 !important;
   background:
-    repeating-linear-gradient(92deg, transparent 0 36px, rgba(205, 242, 215, .03) 44px, rgba(91, 205, 136, .045) 56px, transparent 74px),
-    radial-gradient(ellipse 72% 34% at 64% 0%, rgba(188, 237, 202, .15) 0%, rgba(78, 181, 119, .07) 30%, transparent 62%);
-  animation: starry-aurora-breathe 14s ease-in-out infinite alternate !important;
+    radial-gradient(ellipse 48% 26% at 20% 18%, rgba(229, 75, 163, .08), transparent 72%),
+    radial-gradient(ellipse 52% 30% at 76% 46%, rgba(80, 205, 236, .1), transparent 74%),
+    radial-gradient(ellipse 58% 28% at 42% 86%, rgba(72, 222, 151, .18), transparent 76%);
+  animation: starry-aurora-breathe 18s ease-in-out infinite alternate !important;
 }
 
-@keyframes starry-aurora-drift {
-  0% { transform: translate3d(-4%, -2%, 0) rotate(-5deg) scale(1.02); }
-  50% { transform: translate3d(3%, 2%, 0) rotate(1deg) scale(1.06); }
-  100% { transform: translate3d(8%, -1%, 0) rotate(5deg) scale(1.03); }
+@keyframes starry-aurora-curtain {
+  0% {
+    background-position: 0% 18%;
+    border-radius: 28% 72% 42% 58% / 72% 36% 64% 28%;
+    transform: translate3d(-13%, -7%, 0) rotate(-11deg) skewX(-7deg) scale(.94, .86);
+  }
+  50% {
+    background-position: 58% 48%;
+    border-radius: 63% 37% 68% 32% / 34% 66% 38% 62%;
+    transform: translate3d(3%, 8%, 0) rotate(1deg) skewX(5deg) scale(1.1, 1.08);
+  }
+  100% {
+    background-position: 100% 78%;
+    border-radius: 39% 61% 27% 73% / 62% 29% 71% 38%;
+    transform: translate3d(15%, -3%, 0) rotate(12deg) skewX(-4deg) scale(1.02, 1.18);
+  }
+}
+
+@keyframes starry-aurora-ribbon {
+  0% {
+    background-position: 8% 30%;
+    border-radius: 64% 36% 72% 28% / 40% 66% 34% 60%;
+    transform: translate3d(-15%, 9%, 0) rotate(11deg) skewY(4deg) scale(.92, .8);
+  }
+  46% {
+    background-position: 54% 62%;
+    border-radius: 32% 68% 38% 62% / 70% 30% 64% 36%;
+    transform: translate3d(1%, -9%, 0) rotate(0deg) skewY(-3deg) scale(1.13, 1.14);
+  }
+  100% {
+    background-position: 100% 44%;
+    border-radius: 71% 29% 57% 43% / 31% 69% 42% 58%;
+    transform: translate3d(16%, 5%, 0) rotate(-12deg) skewY(5deg) scale(.98, .9);
+  }
+}
+
+@keyframes starry-aurora-tide {
+  0% {
+    background-position: 2% 66%;
+    border-radius: 36% 64% 31% 69% / 58% 42% 68% 32%;
+    transform: translate3d(-12%, 14%, 0) rotate(-9deg) skewX(4deg) scale(1.08, .72);
+  }
+  52% {
+    background-position: 56% 34%;
+    border-radius: 68% 32% 74% 26% / 33% 67% 41% 59%;
+    transform: translate3d(2%, -13%, 0) rotate(4deg) skewX(-5deg) scale(1.16, 1.16);
+  }
+  100% {
+    background-position: 98% 58%;
+    border-radius: 29% 71% 45% 55% / 72% 28% 61% 39%;
+    transform: translate3d(13%, 6%, 0) rotate(11deg) skewX(3deg) scale(.96, .86);
+  }
 }
 
 @keyframes starry-aurora-breathe {
-  from { opacity: .14; transform: scale(1); }
-  to { opacity: .24; transform: scale(1.035); }
+  from { opacity: .18; transform: translate3d(-1%, -1%, 0) scale(1); }
+  to { opacity: .32; transform: translate3d(1%, 2%, 0) scale(1.045); }
 }
 
 [data-theme="starry"] header h1,
