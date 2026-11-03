@@ -20,15 +20,15 @@
 }
 
 [data-theme="starry"] {
-  --background: #091015;
-  --foreground: #edf3f1;
-  --card: rgba(18, 28, 32, 0.9);
-  --card-foreground: #edf3f1;
-  --border: #34434a;
-  --primary: #7bc8b0;
-  --primary-foreground: #07110d;
-  --muted: #9aa9a5;
-  --accent: rgba(48, 72, 70, 0.52);
+  --background: #090a0c;
+  --foreground: #f0ece4;
+  --card: rgba(23, 25, 29, 0.92);
+  --card-foreground: #f0ece4;
+  --border: #383a40;
+  --primary: #b6a286;
+  --primary-foreground: #121316;
+  --muted: #98938b;
+  --accent: rgba(182, 162, 134, 0.14);
 }
 
 /* 莫兰迪咖 */
