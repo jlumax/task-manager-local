@@ -1,0 +1,315 @@
+/* Local edition visual polish. The original layout, theme palette, and interactions stay intact. */
+.local-skin {
+  --local-soft-shadow: 0 12px 34px color-mix(in srgb, var(--foreground) 8%, transparent);
+  --local-card-highlight: color-mix(in srgb, var(--card) 92%, white 8%);
+}
+
+.local-skin header {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.local-skin header h1 {
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.local-skin .add-task-mini,
+.local-skin .search-box {
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 32%, transparent);
+}
+
+.local-skin .add-task-mini button,
+.local-skin .search-box button {
+  transition: transform .16s ease, filter .16s ease;
+}
+
+.local-skin .add-task-mini button:hover,
+.local-skin .search-box button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.local-skin .view-toggle {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
+  width: calc(100% - 50px);
+  margin: 0 auto 20px;
+  align-items: stretch;
+}
+
+.local-skin .view-toggle > [data-theme="btn-wrapper"] {
+  height: 44px;
+}
+
+.local-skin .view-toggle > button,
+.local-skin .view-toggle > [data-theme="btn-wrapper"] > [data-theme="btn"] {
+  box-sizing: border-box;
+  height: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: .92rem;
+}
+
+.local-skin .view-btn,
+.local-skin [data-theme="btn"] {
+  border-radius: 999px;
+  border-color: color-mix(in srgb, var(--border) 86%, transparent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--foreground) 5%, transparent);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+}
+
+.local-skin .view-btn:hover,
+.local-skin [data-theme="btn"]:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 50%, var(--border));
+  box-shadow: 0 7px 18px color-mix(in srgb, var(--foreground) 9%, transparent);
+}
+
+.local-skin .view-btn.active {
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 24%, transparent);
+}
+
+.local-data-button {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+.local-skin .tasks-container,
+.local-skin .gantt-container {
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  border-radius: calc(var(--radius) + 4px);
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  box-shadow: var(--local-soft-shadow);
+  backdrop-filter: blur(12px);
+}
+
+.local-skin .filter-tab {
+  border-radius: 9px;
+  transition: transform .15s ease, background .15s ease, color .15s ease;
+}
+
+.local-skin .filter-tab:hover {
+  transform: translateY(-1px);
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.local-skin .filter-tab.active {
+  color: var(--primary);
+  --filter-tab-active-color: var(--primary);
+}
+
+.local-skin .filter-tab.active .count {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.local-skin .task-item {
+  border-color: color-mix(in srgb, var(--border) 82%, transparent);
+  background: var(--local-card-highlight);
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--foreground) 5%, transparent);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.local-skin .task-item:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.local-skin input,
+.local-skin textarea,
+.local-skin select {
+  transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+
+.local-skin input:focus,
+.local-skin textarea:focus,
+.local-skin select:focus {
+  border-color: color-mix(in srgb, var(--primary) 66%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent);
+}
+
+.local-skin .mobile-float-bar {
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  border-top-color: color-mix(in srgb, var(--border) 84%, transparent);
+  box-shadow: 0 -8px 24px color-mix(in srgb, var(--foreground) 9%, transparent);
+}
+
+.local-skin .mobile-float-bar button {
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.local-loading {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  gap: 12px;
+  color: var(--muted);
+  background: var(--background);
+  font-size: .82rem;
+}
+
+.local-loading span {
+  width: 28px;
+  height: 28px;
+  margin: auto;
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: local-spin .8s linear infinite;
+}
+
+@keyframes local-spin { to { transform: rotate(360deg); } }
+
+.local-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: color-mix(in srgb, #050806 56%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.local-data-panel {
+  width: min(680px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  padding: 26px;
+  color: var(--foreground);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: 0 34px 90px rgba(0, 0, 0, .28);
+}
+
+.local-data-panel > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.local-kicker {
+  display: block;
+  color: var(--primary);
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.local-data-panel h2 { margin: 7px 0 0; font-size: 1.4rem; font-weight: 750; }
+.local-icon-button { width: 36px; height: 36px; display: grid; place-items: center; color: var(--foreground); border: 1px solid var(--border); background: var(--accent); border-radius: 50%; cursor: pointer; }
+.local-storage-card { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 14px; color: var(--primary-foreground); background: var(--primary); border-radius: var(--radius); }
+.local-storage-icon { width: 40px; height: 40px; display: grid; place-items: center; background: color-mix(in srgb, white 12%, transparent); border-radius: 10px; }
+.local-storage-card strong, .local-storage-card span { display: block; }
+.local-storage-card span { margin-top: 3px; opacity: .76; font-size: .7rem; }
+.local-storage-card .local-persistence { margin: 0; padding: 5px 8px; border: 1px solid color-mix(in srgb, white 32%, transparent); border-radius: 999px; font-size: .66rem; }
+.local-data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+.local-data-grid button { min-height: 104px; padding: 14px; text-align: left; display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 10px; align-content: center; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); color: var(--primary); cursor: pointer; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
+.local-data-grid button:hover { transform: translateY(-2px); border-color: var(--primary); box-shadow: 0 10px 24px color-mix(in srgb, var(--foreground) 9%, transparent); }
+.local-data-grid button strong { color: var(--foreground); font-size: .84rem; }
+.local-data-grid button span { grid-column: 2; color: var(--muted); font-size: .68rem; }
+.local-data-panel > footer { display: flex; gap: 7px; align-items: center; padding-top: 13px; border-top: 1px solid var(--border); color: var(--muted); font-size: .72rem; }
+.local-data-message { margin: 12px 0 0; padding: 9px 11px; color: var(--foreground); background: var(--accent); border-radius: 8px; font-size: .75rem; }
+
+/* Custom image theme: keep the image atmospheric while UI surfaces stay reliably readable. */
+[data-theme="custom"] .local-skin header h1 {
+  color: var(--foreground);
+  text-shadow: 0 1px 14px rgba(255, 255, 255, .72);
+}
+
+[data-theme="custom"] .local-skin header p,
+[data-theme="custom"] .local-skin > .main-content footer {
+  color: #46514b;
+  text-shadow: 0 1px 10px rgba(255, 255, 255, .8);
+}
+
+[data-theme="custom"] .local-skin .tasks-container,
+[data-theme="custom"] .local-skin .gantt-container {
+  color: var(--foreground);
+  background: rgba(252, 251, 248, .91);
+  border-color: rgba(35, 40, 37, .18);
+  box-shadow: 0 18px 46px rgba(22, 28, 25, .18);
+  backdrop-filter: blur(18px) saturate(.86);
+}
+
+[data-theme="custom"] .local-skin [data-theme="dropdown"] {
+  color: #232825;
+  background: rgba(252, 251, 248, .98);
+  border-color: rgba(35, 40, 37, .22);
+  box-shadow: 0 18px 50px rgba(22, 28, 25, .24);
+  backdrop-filter: blur(20px) saturate(.86);
+}
+
+[data-theme="custom"] .local-skin .gantt-header h2,
+[data-theme="custom"] .local-skin .gantt-task-name-header,
+[data-theme="custom"] .local-skin .gantt-task-name,
+[data-theme="custom"] .local-skin #ganttRangeLabel {
+  color: var(--foreground);
+}
+
+[data-theme="custom"] .local-skin .gantt-left-column {
+  color: var(--foreground);
+  background: rgba(252, 251, 248, .96);
+  border-right-color: var(--border);
+}
+
+[data-theme="custom"] .local-skin .gantt-date,
+[data-theme="custom"] .local-skin .gantt-filter-tab {
+  color: var(--muted);
+}
+
+[data-theme="custom"] .local-skin .gantt-nav button,
+[data-theme="custom"] .local-skin .gantt-filter-tab {
+  color: var(--foreground);
+  background: rgba(255, 255, 255, .78);
+  border-color: var(--border);
+}
+
+[data-theme="custom"] .local-skin .gantt-nav button:hover,
+[data-theme="custom"] .local-skin .gantt-filter-tab:hover {
+  background: var(--accent);
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+}
+
+[data-theme="custom"] .local-skin .gantt-date.today,
+[data-theme="custom"] .local-skin .gantt-filter-tab.active {
+  color: var(--primary-foreground);
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+[data-theme="custom"] .local-skin .gantt-timeline,
+[data-theme="custom"] .local-skin .gantt-task-name-header {
+  border-bottom-color: var(--border);
+}
+
+@media (max-width: 768px) {
+  .local-skin .view-toggle {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    margin: 0 0 20px;
+    padding: 0;
+  }
+
+  .local-data-grid { grid-template-columns: 1fr; }
+  .local-data-button { flex: 1 1 auto; justify-content: center; }
+}

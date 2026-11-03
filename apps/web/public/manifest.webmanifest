@@ -1,0 +1,13 @@
+{
+  "name": "任务进度管理器 Local",
+  "short_name": "任务 Local",
+  "description": "无登录、本地优先、可离线的个人任务工作台",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f0e8",
+  "theme_color": "#1f4d3c",
+  "icons": [
+    { "src": "local-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

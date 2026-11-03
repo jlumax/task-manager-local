@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 150">
+  <rect x="48" y="8" width="18" height="80" rx="9" fill="#000"/>
+  <rect x="74" y="24" width="18" height="64" rx="9" fill="none" stroke="#000" stroke-width="3.5"/>
+  <text x="70" y="130" font-family="'Noto Sans SC',sans-serif" font-size="24" font-weight="900" fill="#000" text-anchor="middle">任务大大</text>
+  <text x="70" y="148" font-family="'SF Pro Display',-apple-system,sans-serif" font-size="10" font-weight="700" fill="#000" text-anchor="middle" letter-spacing="5">TASKDADA</text>
+</svg>
