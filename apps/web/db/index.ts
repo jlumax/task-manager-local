@@ -1,6 +1,7 @@
 import Dexie, { Table } from 'dexie';
 import { nanoid } from 'nanoid';
 import { Project, Task } from '@/types';
+import type { LocalLicense } from '@/types/license';
 
 export type PendingSyncAction = 'create' | 'update' | 'delete';
 
@@ -28,6 +29,7 @@ class TaskManagerDB extends Dexie {
   settings!: Table<{ key: string; value: string }, string>;
   pendingSync!: Table<PendingSyncChange, string>;
   projects!: Table<Project, string>;
+  licenses!: Table<LocalLicense, string>;
 
   constructor() {
     super('TaskManagerDB');
@@ -112,6 +114,14 @@ class TaskManagerDB extends Dexie {
       settings: 'key',
       pendingSync: 'id, workspaceId, taskId, action, clientTs',
       projects: 'id, workspaceId, order, archived, name',
+    });
+
+    this.version(9).stores({
+      tasks: 'id, code, title, completed, stuck, pinned, createdAt, completedAt, deadline, priority, projectId, workspaceId',
+      settings: 'key',
+      pendingSync: 'id, workspaceId, taskId, action, clientTs',
+      projects: 'id, workspaceId, order, archived, name',
+      licenses: 'id, status, licenseId, activatedAt',
     });
   }
 }

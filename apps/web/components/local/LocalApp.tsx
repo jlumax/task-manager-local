@@ -18,6 +18,7 @@ import FireworksButton from '@/components/effects/FireworksButton';
 import ThemeEffects from '@/components/effects/ThemeEffects';
 import LocalDataPanel from './LocalDataPanel';
 import ServiceWorkerRegistration from './ServiceWorkerRegistration';
+import LicenseGate from '@/components/license/LicenseGate';
 
 const fontMap: Record<string, string> = {
   'noto-sans': "'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
@@ -29,6 +30,10 @@ const fontMap: Record<string, string> = {
 };
 
 export default function LocalApp() {
+  return <LicenseGate><LicensedLocalApp /></LicenseGate>;
+}
+
+function LicensedLocalApp() {
   const {
     loadTasks,
     loadProjects,

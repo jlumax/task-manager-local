@@ -53,3 +53,15 @@ NEXT_PUBLIC_BASE_PATH=/repository npm run build:local
 ```
 
 仓库内的 `Deploy Local Web to GitHub Pages` Action 只支持手动触发，不会因普通提交自动部署。
+
+### 可选：本地版激活门
+
+默认不启用激活门，因此现有免登录版行为不变。在激活服务完成独立验证后，构建时再配置：
+
+```bash
+NEXT_PUBLIC_LICENSE_REQUIRED=true
+NEXT_PUBLIC_LICENSE_API_URL=https://<license-worker-domain>
+NEXT_PUBLIC_LICENSE_VERIFY_KEY='{"kty":"EC","crv":"P-256","x":"...","y":"..."}'
+```
+
+用户首次激活时需要联网。激活后，签名许可证和不可导出的本机私钥保存在单独的 IndexedDB 表中，可离线验证；它们不会进入任务 JSON/ZIP 备份。

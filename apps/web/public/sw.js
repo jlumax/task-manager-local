@@ -1,4 +1,4 @@
-const CACHE_NAME = 'task-manager-local-v1';
+const CACHE_NAME = 'task-manager-local-v2';
 const SCOPE_PATH = new URL(self.registration.scope).pathname;
 const APP_SHELL = [SCOPE_PATH, `${SCOPE_PATH}manifest.webmanifest`, `${SCOPE_PATH}local-icon.svg`];
 
