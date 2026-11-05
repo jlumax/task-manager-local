@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { ArrowRight, HardDrive, KeyRound, LoaderCircle, ShieldCheck, WifiOff } from 'lucide-react';
+import { ArrowRight, HardDrive, KeyRound, LoaderCircle, MessagesSquare, ShieldCheck, WifiOff } from 'lucide-react';
 
 interface ActivationScreenProps {
   configurationError?: string;
@@ -48,7 +48,7 @@ export default function ActivationScreen({ configurationError, onActivate }: Act
         <div className="license-seal" aria-hidden="true"><KeyRound size={28} /></div>
         <span className="license-serial">TASK MANAGER · PERMANENT LICENSE</span>
         <h2 id="activation-heading">激活本地版</h2>
-        <p>输入购买后获得的激活码。每个激活码只能绑定一个浏览器。</p>
+        <p>输入激活码</p>
         <form onSubmit={submit}>
           <label htmlFor="activation-code">激活码</label>
           <input
@@ -68,7 +68,9 @@ export default function ActivationScreen({ configurationError, onActivate }: Act
             {submitting ? <><LoaderCircle className="license-spinner" size={18} />正在激活</> : <>验证并激活<ArrowRight size={18} /></>}
           </button>
         </form>
-        <small className="license-support">激活遇到问题：jlumax@163.com</small>
+        <small className="license-support">
+          激活遇到问题：<span><MessagesSquare size={14} aria-hidden="true" />Dove_Research</span>
+        </small>
       </section>
     </main>
   );

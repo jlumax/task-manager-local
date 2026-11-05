@@ -668,10 +668,18 @@ body[data-effects-disabled="true"] .success-border {
 .license-support {
   position: relative;
   z-index: 1;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 5px;
   margin-top: 22px;
   color: var(--muted);
   font-size: 0.7rem;
+}
+
+.license-support span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .license-spinner {
