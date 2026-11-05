@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Coffee, Database, X } from 'lucide-react';
+import { Database, MessagesSquare, X } from 'lucide-react';
 import { useTaskStore } from '@/store/taskStore';
 import { LOCAL_WORKSPACE_ID } from '@/lib/app-mode';
 import { seedLocalDemoDataIfNeeded } from '@/lib/local-demo-data';
@@ -126,8 +126,8 @@ function LicensedLocalApp() {
               className="view-btn local-support-button"
               onClick={() => setShowSupport(true)}
             >
-              <Coffee size={15} aria-hidden="true" />
-              赞赏
+              <MessagesSquare size={15} aria-hidden="true" />
+              联系作者
             </button>
           </div>
 
@@ -137,7 +137,7 @@ function LicensedLocalApp() {
 
           <footer className="text-center py-5 text-xs text-muted mt-4 border-t border-border">
             <p>数据仅保存在当前浏览器 · 建议定期导出 ZIP 备份</p>
-            <p className="mt-1">&copy; 2026 KUN WANG. Local Edition. jlumax@163.com</p>
+            <p className="mt-1">&copy; 2026 韭菜鸽子. Local Edition.</p>
           </footer>
         </div>
       </div>
@@ -162,12 +162,12 @@ function LicensedLocalApp() {
               <X size={18} />
             </button>
             <span className="local-kicker">SUPPORT THE AUTHOR</span>
-            <h2 id="local-support-title">好心人，请作者喝杯咖啡吧</h2>
+            <h2 id="local-support-title">和作者深入交流~</h2>
             <Image
               src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/support-qr.png`}
-              alt="赞赏二维码"
-              width={568}
-              height={543}
+              alt="作者微信二维码"
+              width={258}
+              height={258}
               priority
             />
           </section>

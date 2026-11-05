@@ -62,7 +62,7 @@ export default function ActivationScreen({ configurationError, onActivate }: Act
             disabled={submitting || !!configurationError}
           />
           <div className="license-form-status" role="status" aria-live="polite">
-            {error || '激活后，本机许可证不会包含在任务备份中。'}
+            {error || '激活信息仅保存在当前浏览器，请勿清除浏览记录中的本站数据，以免激活失效'}
           </div>
           <button type="submit" disabled={submitting || !!configurationError}>
             {submitting ? <><LoaderCircle className="license-spinner" size={18} />正在激活</> : <>验证并激活<ArrowRight size={18} /></>}
