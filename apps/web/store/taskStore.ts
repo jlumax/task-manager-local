@@ -437,11 +437,15 @@ export const useTaskStore = create<TaskStore>()(
       deleteProject: async (id) => {
         const { currentWorkspaceId, projects, currentProjectId } = get();
         if (!currentWorkspaceId) return;
-        if (!window.confirm('确定删除该项目吗？所属任务将变为未分类。')) return;
         if (isLocalMode) {
+          const project = projects.find((item) => item.id === id);
+          const projectTasks = get().tasks.filter((task) => task.projectId === id);
+          const taskWarning = projectTasks.length > 0
+            ? `\n\n该项目下的 ${projectTasks.length} 个任务及其全部进展记录也将被永久删除。`
+            : '';
+          if (!window.confirm(`确定删除项目“${project?.name || '未命名项目'}”吗？${taskWarning}\n\n此操作无法撤销。`)) return;
           await deleteProjectFromDB(id);
-          const tasks = get().tasks.map((task) => task.projectId === id ? { ...task, projectId: null } : task);
-          await bulkPutTasks(tasks);
+          const tasks = get().tasks.filter((task) => task.projectId !== id);
           set({
             tasks,
             projects: projects.filter((project) => project.id !== id),
@@ -449,6 +453,7 @@ export const useTaskStore = create<TaskStore>()(
           });
           return;
         }
+        if (!window.confirm('确定删除该项目吗？所属任务将变为未分类。')) return;
         try {
           const { projectApi } = await import('@/lib/api');
           await projectApi.delete(currentWorkspaceId, id);

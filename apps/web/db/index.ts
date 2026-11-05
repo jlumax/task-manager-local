@@ -165,7 +165,11 @@ export async function saveProject(project: Project): Promise<void> {
 }
 
 export async function deleteProject(id: string): Promise<void> {
-  await db.projects.delete(id);
+  await db.transaction('rw', db.projects, db.tasks, async () => {
+    const taskIds = (await db.tasks.where('projectId').equals(id).toArray()).map((task) => task.id);
+    if (taskIds.length > 0) await db.tasks.bulkDelete(taskIds);
+    await db.projects.delete(id);
+  });
 }
 
 export async function bulkPutProjects(projects: Project[]): Promise<void> {

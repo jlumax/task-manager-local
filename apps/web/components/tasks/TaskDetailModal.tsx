@@ -7,12 +7,13 @@ import { useTaskStore } from '@/store/taskStore';
 import { renderMarkdown, highlightText } from '@/lib/markdown';
 import MarkdownEditor from '@/components/editor/MarkdownEditor';
 import ImageLightbox from '@/components/files/ImageLightbox';
+import ProgressImageUploader from '@/components/files/ProgressImageUploader';
 import TaskShareMenu from './TaskShareMenu';
 import { triggerFireworks } from '@/lib/fireworks';
 import { workspacesApi, projectApi, Workspace } from '@/lib/api';
 import { Project } from '@/types';
-import { isLocalMode } from '@/lib/app-mode';
-import { Check, MoveUpRight, Pencil, Pin, Plus, Trash2, X } from 'lucide-react';
+import { isLocalMode, LOCAL_WORKSPACE_ID } from '@/lib/app-mode';
+import { Check, MoveUpRight, Pin, Plus, Trash2, X } from 'lucide-react';
 
 export function TaskDetailModal({
   task,
@@ -27,7 +28,7 @@ export function TaskDetailModal({
   isAiOpen?: boolean;
   onNavigateTask: (taskId: string) => void;
 }) {
-  const { toggleComplete, togglePin, updateTaskTitle, updateProgress, addProgress, deleteProgress, effectsEnabled, moveTask, currentWorkspaceId } = useTaskStore();
+  const { toggleComplete, togglePin, updateTaskTitle, updateProgress, addProgress, deleteProgress, effectsEnabled, moveTask, currentWorkspaceId, projects } = useTaskStore();
   const priorityClass = `priority-${task.priority}`;
   const titleRef = useRef<HTMLSpanElement>(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -44,12 +45,36 @@ export function TaskDetailModal({
   const [moveError, setMoveError] = useState<string | null>(null);
   const [moveSuccess, setMoveSuccess] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ images: string[]; initialIndex: number } | null>(null);
+  const [pendingProgressImages, setPendingProgressImages] = useState<string[]>([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   const handleAddProgress = (content: string) => {
-    if (content.trim()) {
-      addProgress(task.id, content);
+    if (content.trim() || pendingProgressImages.length > 0) {
+      addProgress(task.id, content, pendingProgressImages.length > 0 ? pendingProgressImages : undefined);
     }
     setShowProgressEditor(false);
+    setPendingProgressImages([]);
+    setUploadingImages(false);
+  };
+
+  const handleProgressImages = async (files: File[]) => {
+    const imageFiles = files.filter((file) =>
+      file.type.startsWith('image/') || /\.(jpg|jpeg|png|gif|webp|bmp|svg|heic|heif)$/i.test(file.name)
+    );
+    if (imageFiles.length === 0) return;
+
+    setUploadingImages(true);
+    try {
+      const urls = await Promise.all(imageFiles.map((file) => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      })));
+      setPendingProgressImages((previous) => [...previous, ...urls]);
+    } finally {
+      setUploadingImages(false);
+    }
   };
 
   const handleTitleBlur = () => {
@@ -64,9 +89,16 @@ export function TaskDetailModal({
 
   const openMoveDialog = async () => {
     setShowMoveDialog(true);
-    setMoveLoading(true);
     setMoveError(null);
     setMoveSuccess(null);
+    setTargetProjectId(task.projectId || '');
+    if (isLocalMode) {
+      setTargetWorkspaceId(currentWorkspaceId || LOCAL_WORKSPACE_ID);
+      setTargetProjects(projects);
+      setMoveLoading(false);
+      return;
+    }
+    setMoveLoading(true);
     try {
       const list = await workspacesApi.list();
       setWorkspaces(list);
@@ -159,9 +191,9 @@ export function TaskDetailModal({
               >
                 <Pin size={14} fill={task.pinned ? 'currentColor' : 'none'} />
               </button>
-              {!isLocalMode && <button
+              <button
                 onClick={openMoveDialog}
-                title="移动到其他工作区/项目"
+                title={isLocalMode ? '调整所属项目' : '移动到其他工作区/项目'}
                 style={{
                   background: 'transparent',
                   border: 'none',
@@ -172,7 +204,7 @@ export function TaskDetailModal({
                 }}
               >
                 <MoveUpRight size={15} />
-              </button>}
+              </button>
               <TaskShareMenu task={task} triggerClassName="note-share-btn" />
               <button
                 onClick={onClose}
@@ -201,7 +233,8 @@ export function TaskDetailModal({
                 })}
               </span>
               {task.progress.length > 0 && (
-                <span>
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                  Updated&nbsp;
                   {(() => {
                     const updateTime = task.progress.reduce((latest, p) =>
                       new Date(p.time) > new Date(latest.time) ? p : latest
@@ -210,8 +243,6 @@ export function TaskDetailModal({
                     const pad = (n: number) => String(n).padStart(2, '0');
                     return `${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
                   })()}
-                  {' '}
-                  <Pencil size={12} />
                 </span>
               )}
             </div>
@@ -348,7 +379,20 @@ export function TaskDetailModal({
           placeholder="在此输入进展内容..."
           overlayStyle={{ right: isAiOpen ? 420 : 0 }}
           onConfirm={handleAddProgress}
-          onCancel={() => setShowProgressEditor(false)}
+          onCancel={() => {
+            setShowProgressEditor(false);
+            setPendingProgressImages([]);
+            setUploadingImages(false);
+          }}
+          onPasteImage={isLocalMode ? handleProgressImages : undefined}
+          extra={isLocalMode ? (
+            <ProgressImageUploader
+              images={pendingProgressImages}
+              uploading={uploadingImages}
+              onSelectFiles={handleProgressImages}
+              onRemove={(index) => setPendingProgressImages((previous) => previous.filter((_, itemIndex) => itemIndex !== index))}
+            />
+          ) : undefined}
         />,
         document.body
       )}
@@ -360,7 +404,7 @@ export function TaskDetailModal({
         />,
         document.body
       )}
-      {!isLocalMode && showMoveDialog && createPortal(
+      {showMoveDialog && createPortal(
         <div
 	          className="note-modal-overlay"
 	          style={{ right: isAiOpen ? 420 : 0, backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
@@ -382,7 +426,7 @@ export function TaskDetailModal({
             onClick={(e) => e.stopPropagation()}
           >
             <h3 style={{ margin: '0 0 14px', fontSize: '1rem', fontWeight: 600, color: 'var(--foreground)' }}>
-              移动任务
+              {isLocalMode ? '调整所属项目' : '移动任务'}
             </h3>
             {moveLoading && (
               <p style={{ margin: '0 0 12px', color: 'var(--muted)', fontSize: '0.85rem' }}>
@@ -399,7 +443,7 @@ export function TaskDetailModal({
                 {moveSuccess}
               </p>
             )}
-            <div style={{ marginBottom: '12px' }}>
+            {!isLocalMode && <div style={{ marginBottom: '12px' }}>
               <label style={{ display: 'block', fontSize: '0.78rem', color: 'var(--muted)', marginBottom: '4px' }}>目标工作区</label>
               <select
                 value={targetWorkspaceId}
@@ -438,7 +482,7 @@ export function TaskDetailModal({
                   <option key={w.id} value={w.id}>{w.name}</option>
                 ))}
               </select>
-            </div>
+            </div>}
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', fontSize: '0.78rem', color: 'var(--muted)', marginBottom: '4px' }}>目标项目</label>
               <select
@@ -454,7 +498,7 @@ export function TaskDetailModal({
                   fontSize: '0.9rem',
                 }}
               >
-                <option value="">（不指定项目）</option>
+                <option value="">（无项目）</option>
                 {targetProjects.map((p) => (
                   <option key={p.id} value={p.id}>{p.name}</option>
                 ))}
@@ -486,7 +530,7 @@ export function TaskDetailModal({
                     setMoveError(null);
 	                  try {
 	                    await moveTask(task.id, targetWorkspaceId, targetProjectId || undefined);
-                      setMoveSuccess('移动成功');
+                      setMoveSuccess(isLocalMode ? '所属项目已更新' : '移动成功');
                       window.setTimeout(() => {
 	                      setShowMoveDialog(false);
 	                      onClose();
@@ -509,7 +553,7 @@ export function TaskDetailModal({
                   opacity: moving || !targetWorkspaceId ? 0.5 : 1,
                 }}
               >
-                {moving ? '移动中...' : '确认移动'}
+                {moving ? '处理中...' : (isLocalMode ? '确认调整' : '确认移动')}
               </button>
             </div>
           </div>

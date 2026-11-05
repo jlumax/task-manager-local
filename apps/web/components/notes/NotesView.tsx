@@ -9,7 +9,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import ImageLightbox from '@/components/files/ImageLightbox';
 import TaskShareMenu from '@/components/tasks/TaskShareMenu';
 import { TaskDetailModal } from '@/components/tasks/TaskDetailModal';
-import { BarChart3, ChevronsDown, ChevronsUp, ListTodo, NotebookText, Pencil, Pin } from 'lucide-react';
+import { BarChart3, ChevronsDown, ChevronsUp, ListTodo, NotebookText, Pin } from 'lucide-react';
 
 function formatLocalDate(date: Date) {
   const year = date.getFullYear();
@@ -125,7 +125,8 @@ function NoteCard({ task, searchTerm, onClick, onNavigateTask, onOpenImages, col
           })}
         </span>
         {task.progress.length > 0 && (
-          <span>
+          <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+            Updated&nbsp;
             {(() => {
               const updateTime = task.progress.reduce((latest, p) =>
                 new Date(p.time) > new Date(latest.time) ? p : latest
@@ -134,8 +135,6 @@ function NoteCard({ task, searchTerm, onClick, onNavigateTask, onOpenImages, col
               const pad = (n: number) => String(n).padStart(2, '0');
               return `${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
             })()}
-            {' '}
-            <Pencil size={12} />
           </span>
         )}
       </div>

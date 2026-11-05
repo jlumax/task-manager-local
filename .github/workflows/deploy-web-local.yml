@@ -38,7 +38,7 @@ jobs:
         env:
           NEXT_PUBLIC_APP_MODE: local
           NEXT_PUBLIC_LICENSE_REQUIRED: true
-          NEXT_PUBLIC_LICENSE_API_URL: https://task-manager-license-gateway.pages.dev
+          NEXT_PUBLIC_LICENSE_API_URL: https://license.taskdada.cn
           NEXT_PUBLIC_LICENSE_VERIFY_KEY: ${{ vars.LICENSE_VERIFY_KEY }}
         run: |
           test -n "$NEXT_PUBLIC_LICENSE_VERIFY_KEY"
