@@ -1,31 +1,15 @@
-import { db } from '@/db';
 import {
   createDeviceLicenseRecord,
   deviceKeyHash,
   provePrivateKey,
   verifyLicenseToken,
 } from '@/lib/license-crypto';
+import { readLocalLicense, writeLocalLicense } from '@/lib/license-storage';
 import type { ActivationResponse, LicenseCheckResult, LocalLicense } from '@/types/license';
 
 export const isLicenseRequired = process.env.NEXT_PUBLIC_LICENSE_REQUIRED === 'true';
 const licenseApiUrl = (process.env.NEXT_PUBLIC_LICENSE_API_URL || '').replace(/\/$/, '');
 const verificationKeyText = process.env.NEXT_PUBLIC_LICENSE_VERIFY_KEY || '';
-const LICENSE_STORAGE_TIMEOUT_MS = 8000;
-
-async function readStoredLicense(): Promise<LocalLicense | undefined> {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-  try {
-    return await Promise.race([
-      db.licenses.get('primary'),
-      new Promise<never>((_, reject) => {
-        timeoutId = setTimeout(() => reject(new Error('LICENSE_STORAGE_TIMEOUT')), LICENSE_STORAGE_TIMEOUT_MS);
-      }),
-    ]);
-  } finally {
-    if (timeoutId) clearTimeout(timeoutId);
-  }
-}
-
 function verificationKey(): JsonWebKey {
   if (!verificationKeyText) throw new Error('缺少许可证验证公钥');
   const parsed = JSON.parse(verificationKeyText) as JsonWebKey;
@@ -50,7 +34,7 @@ export async function checkLocalLicense(): Promise<LicenseCheckResult> {
   }
   let record: LocalLicense | undefined;
   try {
-    record = await readStoredLicense();
+    record = await readLocalLicense();
   } catch {
     return { status: 'configuration-error', message: '无法读取本机许可证，请关闭其他页签后刷新重试。' };
   }
@@ -63,10 +47,10 @@ export async function checkLocalLicense(): Promise<LicenseCheckResult> {
 }
 
 async function getOrCreateDeviceRecord(): Promise<LocalLicense> {
-  const existing = await db.licenses.get('primary');
+  const existing = await readLocalLicense();
   if (existing) return existing;
   const created = await createDeviceLicenseRecord();
-  await db.licenses.put(created);
+  await writeLocalLicense(created);
   return created;
 }
 
@@ -85,16 +69,21 @@ function responseError(value: unknown): string {
 export async function activateLocalLicense(code: string): Promise<void> {
   if (!licenseApiUrl) throw new Error('激活服务尚未配置');
   const device = await getOrCreateDeviceRecord();
-  const response = await fetch(`${licenseApiUrl}/v1/activate`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    cache: 'no-store',
-    body: JSON.stringify({
-      code,
-      devicePublicKey: device.publicKey,
-      appVersion: 'local-v1',
-    }),
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${licenseApiUrl}/v1/activate`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      cache: 'no-store',
+      body: JSON.stringify({
+        code,
+        devicePublicKey: device.publicKey,
+        appVersion: 'local-v1',
+      }),
+    });
+  } catch {
+    throw new Error('当前网络无法连接激活服务，请稍后重试或联系作者。');
+  }
   const body = await response.json() as unknown;
   if (!response.ok) throw new Error(responseError(body));
   if (!isActivationResponse(body)) throw new Error('激活服务返回了无效许可证');
@@ -111,5 +100,5 @@ export async function activateLocalLicense(code: string): Promise<void> {
     activatedAt: payload.issuedAt,
   };
   if (!(await provePrivateKey(activeRecord))) throw new Error('本机密钥验证失败');
-  await db.licenses.put(activeRecord);
+  await writeLocalLicense(activeRecord);
 }
